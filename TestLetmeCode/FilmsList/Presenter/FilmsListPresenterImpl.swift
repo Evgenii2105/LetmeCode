@@ -10,6 +10,8 @@ import UIKit
 class FilmsListPresenterImpl: FilmsListPresenter {
    
     weak var view: FilmsListView?
+    
+    weak var delegate: FilmsListDelegate?
    
     var films: [Film] = [
         Film(title: "Во все тяжкие", genre: "драма", year: 2008, country: "США", rating: 9.5),
@@ -19,5 +21,8 @@ class FilmsListPresenterImpl: FilmsListPresenter {
     func makeFilmsDetailPresenter(film: Film) -> FilmDetailsPresenterImpl {
         return FilmDetailsPresenterImpl(film: film)
     }
-
+    
+    func performLogaut() {
+        delegate?.didLogout()
+    }
 }

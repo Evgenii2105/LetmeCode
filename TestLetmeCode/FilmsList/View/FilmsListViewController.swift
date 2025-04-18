@@ -11,8 +11,6 @@ class FilmsListViewController: UIViewController {
     
     var presenter: FilmsListPresenter?
     
-    private let cellidentifire = "listFilms"
-    
     private let searchTextFild: UITextField = {
         let searchTextFild = UITextField()
         searchTextFild.attributedPlaceholder = NSAttributedString(string: "Поиск фильмов",
@@ -59,15 +57,26 @@ class FilmsListViewController: UIViewController {
                                action: #selector(tappedExit))
     }()
     
+    private lazy var sortedButton: UIButton = {
+        let sortedButton = UIButton()
+        let image = UIImage(systemName: "arrow.up.arrow.down")
+        sortedButton.setImage(image, for: .normal)
+        sortedButton.addAction(
+            UIAction { [weak self] _ in
+                self?.tapSortedButton()
+            },
+            for: .touchUpInside
+        )
+        return sortedButton
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter = FilmsListPresenterImpl()
         view.backgroundColor = .black
         setupNavigationBar()
         setupDelegatePicker()
         setupUI()
         createListFilmsTable()
-        tapGesture()
     }
     
     private func setupNavigationBar() {
@@ -86,16 +95,25 @@ class FilmsListViewController: UIViewController {
         view.addSubview(searchTextFild)
         view.addSubview(yearsPicker)
         view.addSubview(listFilmsTable)
+        view.addSubview(sortedButton)
+        navigationItem.hidesBackButton = true
         
         let topInset: CGFloat = 125
         let elementHeight: CGFloat = 44
         let horizontalPadding: CGFloat = 16
         let leftPadding: CGFloat = 50
         
-        searchTextFild.frame = CGRect(
-            x: leftPadding,
+        sortedButton.frame = CGRect(
+            x: horizontalPadding,
             y: topInset,
-            width: view.bounds.width - leftPadding - horizontalPadding,
+            width: elementHeight,
+            height: elementHeight
+        )
+        
+        searchTextFild.frame = CGRect(
+            x: sortedButton.frame.maxX + horizontalPadding,
+            y: topInset,
+            width: view.bounds.width - sortedButton.frame.maxX - horizontalPadding - horizontalPadding,
             height: elementHeight
         )
         
@@ -117,7 +135,12 @@ class FilmsListViewController: UIViewController {
     @objc
     private func tappedExit() {
         view.endEditing(true)
+        presenter?.performLogaut()
         navigationController?.popViewController(animated: true)
+    }
+    
+    private func tapSortedButton() {
+        print("Кнопка нажата")
     }
     
     private func setupDelegatePicker() {
@@ -133,12 +156,7 @@ class FilmsListViewController: UIViewController {
         listFilmsTable.dataSource = self
         listFilmsTable.delegate = self
     }
-    
-    private func tapGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        view.addGestureRecognizer(tapGesture)
-    }
-    
+        
     @objc
     private func dismissKeyboard() {
         view.endEditing(true)
@@ -181,7 +199,7 @@ extension FilmsListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Ячейка нажата \(indexPath.row)")
+     
         tableView.deselectRow(at: indexPath, animated: true)
         
         guard let film = presenter?.films[indexPath.row] else { return }

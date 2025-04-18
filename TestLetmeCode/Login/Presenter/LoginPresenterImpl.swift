@@ -24,14 +24,12 @@ class LoginPresenterImpl: LoginPresenter {
             return
         }
         
-        switch  userStorage.validateUserPassword(login: login, password: password) {
+        switch userStorage.validateUserPassword(login: login, password: password) {
             
         case .success:
-            clearFields()
             view?.loginSucces()
         case .userNotFound:
             userStorage.saveLoginAndPasswordUser(login: login, password: password)
-            clearFields()
             view?.loginSucces()
         case .wrongPassword:
             view?.showError(message: "Введите корректный пароль")
@@ -39,10 +37,15 @@ class LoginPresenterImpl: LoginPresenter {
     }
     
     func makeFilmsListPresenter() -> FilmsListPresenterImpl {
-        return FilmsListPresenterImpl()
+        let presenter = FilmsListPresenterImpl()
+        presenter.delegate = self
+        return presenter
     }
+}
+
+extension LoginPresenterImpl: FilmsListDelegate {
     
-    func clearFields() {
+    func didLogout() {
         view?.clearFields()
     }
 }

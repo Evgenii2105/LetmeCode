@@ -10,3 +10,7 @@ import Foundation
 protocol FilmDetailsPresenter: AnyObject {
     var film: Film { get }
 }
+
+protocol TapLinkDelegate: AnyObject {
+    func tapLink()
+}

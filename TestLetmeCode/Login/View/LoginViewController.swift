@@ -48,7 +48,6 @@ class LoginViewController: UIViewController {
         return loginBitton
     }()
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -159,6 +158,6 @@ extension LoginViewController: LoginView {
         filmsVC.presenter = filmsListPresenter
         filmsListPresenter?.view = filmsVC
         
-        navigationController?.pushViewController(FilmsListViewController(), animated: true)
+        navigationController?.pushViewController(filmsVC, animated: true)
     }
 }

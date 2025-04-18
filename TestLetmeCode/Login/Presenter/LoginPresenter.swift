@@ -10,5 +10,4 @@ import Foundation
 protocol LoginPresenter {
     func handleAuth(login: String?, password: String?)
     func makeFilmsListPresenter() -> FilmsListPresenterImpl
-    func clearFields()
 }

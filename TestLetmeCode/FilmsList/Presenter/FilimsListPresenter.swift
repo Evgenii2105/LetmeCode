@@ -10,4 +10,9 @@ import Foundation
 protocol FilmsListPresenter: AnyObject {
     var films: [Film] { get }
     func makeFilmsDetailPresenter(film: Film) -> FilmDetailsPresenterImpl
+    func performLogaut()
+}
+
+protocol FilmsListDelegate: AnyObject {
+    func didLogout()
 }

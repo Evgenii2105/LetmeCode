@@ -16,7 +16,7 @@ struct Film {
     
     enum FildDetailCellType {
         case description(text: String, link: URL?)
-        case genreAndYear(genre: String, year: Decimal)
+        case genreAndYear(genre: String, year: Decimal, country: String)
         case pictures(imageNames: [String])
     }
 }
@@ -26,7 +26,7 @@ extension Film {
     func toCellTypes() -> [FildDetailCellType] {
         return [
             .description(text: "Описание фильма", link: nil),
-            .genreAndYear(genre: genre, year: year),
+            .genreAndYear(genre: genre, year: year, country: country),
             .pictures(imageNames: [])
         ]
     }

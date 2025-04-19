@@ -16,4 +16,12 @@ class FilmDetailsPresenterImpl: FilmDetailsPresenter {
     init(film: Film) {
         self.film = film
     }
+    
+    func setupDataSourse() {
+        let title = film.title
+        let rating = film.rating
+        let cellTypes = film.toCellTypes()
+
+        view?.showFilmDetails(title: title, rating: rating, cellTypes: cellTypes)
+    }
 }

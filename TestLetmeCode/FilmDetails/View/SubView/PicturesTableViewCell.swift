@@ -14,20 +14,17 @@ class PicturesTableViewCell: UITableViewCell {
     private let picturesLabel: UILabel = {
         let picturesLabel = UILabel()
         picturesLabel.text = "Кадры"
+        picturesLabel.font = .systemFont(ofSize: 22, weight: .bold)
         picturesLabel.textColor = .white
         picturesLabel.numberOfLines = 1
+        picturesLabel.translatesAutoresizingMaskIntoConstraints = false
         return picturesLabel
-    }()
-    
-    private let picturesImage: UIImageView = {
-        let picturesImage = UIImageView()
-        picturesImage.image = .actions
-        return picturesImage
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
+        setupContraints()
     }
     
     required init?(coder: NSCoder) {
@@ -35,22 +32,19 @@ class PicturesTableViewCell: UITableViewCell {
     }
     
     private func setupUI() {
+        contentView.backgroundColor = .clear
+        backgroundColor = .clear
         contentView.addSubview(picturesLabel)
-        contentView.addSubview(picturesImage)
-        
-        picturesLabel.frame = CGRect(
-            x: 16,
-            y: 8,
-            width: contentView.bounds.width / 3,
-            height: 28
-        )
-        
-        picturesImage.frame = CGRect(
-            x: 16,
-            y: picturesLabel.frame.maxY + 8,
-            width: contentView.bounds.width,
-            height: contentView.frame.height - 28 - 8
-        )
+    }
+    
+    private func setupContraints() {
+        NSLayoutConstraint.activate([
+            
+            picturesLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            picturesLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            picturesLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -8),
+            picturesLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
+        ])
     }
     
     func configure(with imageNames: [String]) {

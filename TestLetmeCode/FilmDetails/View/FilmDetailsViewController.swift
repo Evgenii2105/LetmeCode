@@ -44,7 +44,7 @@ class FilmDetailsViewController: UIViewController {
         view.backgroundColor = .black
         setupUI()
         configureMovieDiscriptionTable()
-        
+        presenter?.setupDataSourse()
     }
     
     private func setupUI() {
@@ -98,10 +98,10 @@ class FilmDetailsViewController: UIViewController {
 
 extension FilmDetailsViewController: FilmDetailsView {
     
-    func showFilmDetails(film: Film) {
-        titleLabel.text = film.title
-        ratingLabel.text = "\(film.rating)"
-        cellTypes = film.toCellTypes()
+    func showFilmDetails(title: String, rating: Decimal, cellTypes: [Film.FildDetailCellType]) {
+        titleLabel.text = title
+        ratingLabel.text = "\(rating)"
+        self.cellTypes = cellTypes
         movieDiscription.reloadData()
     }
 }
@@ -123,15 +123,17 @@ extension FilmDetailsViewController: UITableViewDelegate, UITableViewDataSource 
                                                            for: indexPath) as? DetailsFilmTableViewCell else {
                 return UITableViewCell()
             }
+            cell.selectionStyle = .none
             cell.configure(description: text, link: link)
             return cell
             
-        case .genreAndYear(let genre, let year):
+        case .genreAndYear(let genre, let year, let country):
             guard let cell = tableView.dequeueReusableCell(withIdentifier: GenreYearTableViewCell.cellidentidire,
                                                            for: indexPath) as? GenreYearTableViewCell else {
                 return UITableViewCell()
             }
-            cell.configure(genre: genre, year: year)
+            cell.selectionStyle = .none
+            cell.configure(genre: genre, year: year, country: country)
             return cell
             
         case .pictures(let imageNames):
@@ -139,6 +141,7 @@ extension FilmDetailsViewController: UITableViewDelegate, UITableViewDataSource 
                                                            for: indexPath) as? PicturesTableViewCell else {
                 return UITableViewCell()
             }
+            cell.selectionStyle = .none
             cell.configure(with: imageNames)
             return cell
         }

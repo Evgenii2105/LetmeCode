@@ -17,6 +17,7 @@ class DetailsFilmTableViewCell: UITableViewCell {
         let titleLabel = UILabel()
         titleLabel.text = "Описание"
         titleLabel.textColor = .white
+        titleLabel.font = .systemFont(ofSize: 24, weight: .bold)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         return titleLabel
     }()
@@ -25,55 +26,60 @@ class DetailsFilmTableViewCell: UITableViewCell {
         let linkButton = UIButton()
         let image = UIImage(systemName: "link")
         linkButton.setImage(image, for: .normal)
+        linkButton.tintColor = .white
+        linkButton.translatesAutoresizingMaskIntoConstraints = false
         return linkButton
     }()
     
     private let movieDescription: UILabel = {
         let movieDescription = UILabel()
         movieDescription.textColor = .white
-        movieDescription.text = "Классный фильм"
+        movieDescription.translatesAutoresizingMaskIntoConstraints = false
         return movieDescription
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-        setupUI()
     }
     
     private func setupUI() {
+        contentView.backgroundColor = .clear
+        backgroundColor = .clear
         contentView.addSubview(titleLabel)
         contentView.addSubview(linkButton)
         contentView.addSubview(movieDescription)
+    }
+    
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: linkButton.leadingAnchor, constant: -8),
+            titleLabel.heightAnchor.constraint(equalToConstant: 28),
+            
+            linkButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            linkButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+            linkButton.widthAnchor.constraint(equalToConstant: 22),
+            linkButton.heightAnchor.constraint(equalToConstant: 22),
+            
+            movieDescription.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
+            movieDescription.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            movieDescription.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            movieDescription.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
+        ])
         
-        titleLabel.frame = CGRect(
-            x: 16,
-            y: 8,
-            width: contentView.bounds.height / 2,
-            height: 28
-        )
-        
-        linkButton.frame = CGRect(
-            x: titleLabel.frame.maxX + 16,
-            y: 8,
-            width: 22,
-            height: 22
-        )
-        
-        movieDescription.frame = CGRect(
-            x: 16,
-            y: titleLabel.frame.maxY + 16,
-            width: 60,
-            height: contentView.frame.height - titleLabel.frame.maxY
-        )
+        print(linkButton)
     }
     
     func configure(description: String, link: URL?) {
         movieDescription.text = description
-        linkButton.isHidden = link == nil
+        // linkButton.isHidden
     }
 }

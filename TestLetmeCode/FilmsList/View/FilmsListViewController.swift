@@ -9,12 +9,24 @@ import UIKit
 
 class FilmsListViewController: UIViewController {
     
-    var presenter: FilmsListPresenter?
+    enum Sorted {
+        case sortedDefault
+        case sortedDescending
+        case sortedAscending
+    }
     
+    // MARK: - Properties
+    var presenter: FilmsListPresenter?
+    private let years = Array(1990...2025)
+    private var currentSorted: Sorted = .sortedDefault
+    
+    // MARK: - UI Components
     private let searchTextFild: UITextField = {
         let searchTextFild = UITextField()
-        searchTextFild.attributedPlaceholder = NSAttributedString(string: "Поиск фильмов",
-                                                                  attributes: [.foregroundColor: UIColor.lightGray])
+        searchTextFild.attributedPlaceholder = NSAttributedString(
+            string: "Поиск фильмов",
+            attributes: [.foregroundColor: UIColor.lightGray])
+        
         searchTextFild.borderStyle = .roundedRect
         searchTextFild.layer.borderWidth = 1
         searchTextFild.layer.borderColor = UIColor.lightGray.cgColor
@@ -34,12 +46,18 @@ class FilmsListViewController: UIViewController {
         return searchTextFild
     }()
     
-    private let yearsPicker: UIPickerView = {
-        let yearsPicker = UIPickerView()
-        yearsPicker.backgroundColor = .black
-        yearsPicker.layer.borderWidth = 1
-        yearsPicker.layer.borderColor = UIColor.lightGray.cgColor
-        return yearsPicker
+    private lazy var yearButton: UIButton = {
+        let yearButton = UIButton()
+        let image = UIImage(systemName: "chevron.down")
+        yearButton.setTitle("Фильмы по годам", for: .normal)
+        yearButton.setImage(image, for: .normal)
+        yearButton.setTitleColor(.white, for: .normal)
+        yearButton.backgroundColor = .black
+        yearButton.layer.borderWidth = 1
+        yearButton.layer.borderColor = UIColor.lightGray.cgColor
+        yearButton.semanticContentAttribute = .forceRightToLeft
+        yearButton.addTarget(self, action: #selector(toggleYearPicker), for: .touchUpInside)
+        return yearButton
     }()
     
     private let listFilmsTable: UITableView = {
@@ -49,7 +67,7 @@ class FilmsListViewController: UIViewController {
     }()
     
     private lazy var exitButton: UIBarButtonItem = {
-        let image = UIImage(systemName: "xmark")?
+        let image = UIImage(systemName: "rectangle.portrait.and.arrow.right")?
             .withConfiguration(UIImage.SymbolConfiguration(weight: .bold))
         return UIBarButtonItem(image: image,
                                style: .plain,
@@ -69,12 +87,13 @@ class FilmsListViewController: UIViewController {
         )
         return sortedButton
     }()
-    
+        
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
         setupNavigationBar()
-        setupDelegatePicker()
+        setupDelegate()
         setupUI()
         createListFilmsTable()
     }
@@ -93,7 +112,7 @@ class FilmsListViewController: UIViewController {
     
     private func setupUI() {
         view.addSubview(searchTextFild)
-        view.addSubview(yearsPicker)
+        view.addSubview(yearButton)
         view.addSubview(listFilmsTable)
         view.addSubview(sortedButton)
         navigationItem.hidesBackButton = true
@@ -101,7 +120,6 @@ class FilmsListViewController: UIViewController {
         let topInset: CGFloat = 125
         let elementHeight: CGFloat = 44
         let horizontalPadding: CGFloat = 16
-        let leftPadding: CGFloat = 50
         
         sortedButton.frame = CGRect(
             x: horizontalPadding,
@@ -117,7 +135,7 @@ class FilmsListViewController: UIViewController {
             height: elementHeight
         )
         
-        yearsPicker.frame = CGRect(
+        yearButton.frame = CGRect(
             x: horizontalPadding,
             y: topInset + elementHeight + 8,
             width: view.bounds.width - 2 * horizontalPadding,
@@ -126,12 +144,13 @@ class FilmsListViewController: UIViewController {
         
         listFilmsTable.frame = CGRect(
             x: 0,
-            y: yearsPicker.frame.maxY + 8,
+            y: yearButton.frame.maxY + 8,
             width: view.bounds.width,
-            height: view.bounds.height - yearsPicker.frame.maxY - view.safeAreaInsets.bottom
+            height: view.bounds.height - yearButton.frame.maxY - view.safeAreaInsets.bottom
         )
     }
     
+    // MARK: - Actions
     @objc
     private func tappedExit() {
         view.endEditing(true)
@@ -139,16 +158,43 @@ class FilmsListViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
+    @objc
     private func tapSortedButton() {
-        print("Кнопка нажата")
+        sortedButton.showsMenuAsPrimaryAction = true
+        
+        let sortedDefault = UIAction(title: "Сортировка по годам",
+                                     state: currentSorted == .sortedDefault ? .on : .off,
+                                   handler: { [weak self] _ in
+            self?.currentSorted = .sortedDefault
+            self?.tapSortedButton()
+        })
+        
+        let sortedDescending = UIAction(title: "Сортировка по убыванию",
+                                        state: currentSorted == .sortedDescending ? .on : .off,
+                                        handler: { [weak self] _ in
+            self?.currentSorted = .sortedDescending
+            self?.tapSortedButton()
+        })
+        
+        let sortedAscending = UIAction(title: "Сортировка по возрастанию",
+                                       state: currentSorted == .sortedAscending ? .on : .off,
+                                       handler: { [weak self] _ in
+            self?.currentSorted = .sortedAscending
+            self?.tapSortedButton()
+        })
+        sortedButton.menu = UIMenu(title: "", children: [sortedDefault, sortedDescending, sortedAscending])
     }
     
-    private func setupDelegatePicker() {
-        yearsPicker.delegate = self
-        yearsPicker.dataSource = self
+    @objc
+    private func toggleYearPicker() {
+        let pickerVC = GenericPickerViewController.makePickerController(
+            with: years.map { String($0) })
         
+        present(pickerVC, animated: true)
+    }
+    
+    private func setupDelegate() {
         searchTextFild.delegate = self
-        
     }
     
     private func createListFilmsTable() {
@@ -156,7 +202,7 @@ class FilmsListViewController: UIViewController {
         listFilmsTable.dataSource = self
         listFilmsTable.delegate = self
     }
-        
+    
     @objc
     private func dismissKeyboard() {
         view.endEditing(true)
@@ -167,17 +213,7 @@ extension FilmsListViewController: FilmsListView {
     
 }
 
-extension FilmsListViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-    
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return 10
-    }
-}
-
+// MARK: UITableViewDelegate & DataSourse
 extension FilmsListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -199,7 +235,7 @@ extension FilmsListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-     
+        
         tableView.deselectRow(at: indexPath, animated: true)
         
         guard let film = presenter?.films[indexPath.row] else { return }
@@ -208,12 +244,13 @@ extension FilmsListViewController: UITableViewDelegate, UITableViewDataSource {
         let presenterFilmsVC = presenter?.makeFilmsDetailPresenter(film: film)
         
         detailFilmsVC.presenter = presenterFilmsVC
-        presenterFilmsVC?.view = detailFilmsVC 
+        presenterFilmsVC?.view = detailFilmsVC
         
         navigationController?.pushViewController(detailFilmsVC, animated: true)
     }
 }
 
+// MARK: UITextFieldDelegate
 extension FilmsListViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -221,5 +258,13 @@ extension FilmsListViewController: UITextFieldDelegate {
             searchTextFild.resignFirstResponder()
         }
         return true
+    }
+}
+
+extension FilmsListViewController: CustomPickerDelegate {
+    
+    func didSelectYear(year: Int) {
+        yearButton.setTitle("\(year)", for: .normal)
+        yearButton.semanticContentAttribute = .forceRightToLeft
     }
 }

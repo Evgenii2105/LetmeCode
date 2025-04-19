@@ -8,7 +8,7 @@
 import Foundation
 
 protocol FilmDetailsPresenter: AnyObject {
-    var film: Film { get }
+    func setupDataSourse() 
 }
 
 protocol TapLinkDelegate: AnyObject {

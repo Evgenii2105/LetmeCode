@@ -13,23 +13,32 @@ class GenreYearTableViewCell: UITableViewCell {
     
     private let genreLabel: UILabel = {
         let genreLabel = UILabel()
-        genreLabel.textColor = .white
-        genreLabel.text = "Genre Label"
+        genreLabel.textColor = .lightGray
         genreLabel.numberOfLines = 1
+        genreLabel.translatesAutoresizingMaskIntoConstraints = false
         return genreLabel
     }()
     
     private let yearLabel: UILabel = {
         let yearLabel = UILabel()
-        yearLabel.textColor = .white
-        yearLabel.text = "Year"
+        yearLabel.textColor = .lightGray
         yearLabel.numberOfLines = 1
+        yearLabel.translatesAutoresizingMaskIntoConstraints = false
         return yearLabel
+    }()
+    
+    private let countryLabel: UILabel = {
+        let countryLabel = UILabel()
+        countryLabel.numberOfLines = 1
+        countryLabel.textColor = .lightGray
+        countryLabel.translatesAutoresizingMaskIntoConstraints = false
+        return countryLabel
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -37,27 +46,35 @@ class GenreYearTableViewCell: UITableViewCell {
     }
     
     private func setupUI() {
+        contentView.backgroundColor = .clear
+        backgroundColor = .clear
         contentView.addSubview(genreLabel)
         contentView.addSubview(yearLabel)
-        
-        genreLabel.frame = CGRect(
-            x: 16,
-            y: 8,
-            width: contentView.bounds.width / 3,
-            height: 24
-        )
-        
-        yearLabel.frame = CGRect(
-            x: 16,
-            y: genreLabel.frame.maxY + 8,
-            width: contentView.bounds.width,
-            height: contentView.frame.height - 24 - 8
-        )
+        contentView.addSubview(countryLabel)
     }
     
-    func configure(genre: String, year: Decimal) {
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            genreLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            genreLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            genreLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -8),
+            genreLabel.heightAnchor.constraint(equalToConstant: 28),
+            
+            yearLabel.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 8),
+            yearLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            yearLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            yearLabel.trailingAnchor.constraint(lessThanOrEqualTo: countryLabel.leadingAnchor, constant: -8),
+            
+            countryLabel.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 8),
+            countryLabel.leadingAnchor.constraint(equalTo: yearLabel.trailingAnchor, constant: 8),
+            countryLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            countryLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -8)
+        ])
+    }
+    
+    func configure(genre: String, year: Decimal, country: String) {
         genreLabel.text = genre
-        yearLabel.text = "\(year)"
+        yearLabel.text = "\(year) •"
+        countryLabel.text = country
     }
-    
 }

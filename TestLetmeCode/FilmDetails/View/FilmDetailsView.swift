@@ -8,5 +8,5 @@
 import Foundation
 
 protocol FilmDetailsView: AnyObject {
-    func showFilmDetails(title: String, rating: Decimal, cellTypes: [Film.FildDetailCellType])
+    func showFilmDetails(title: String, rating: Decimal, cellTypes: [FilmDetailCellType])
 }

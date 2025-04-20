@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum NetWorkError: Error {
+enum NetworkError: Error {
     case invalidURL
     case requestFailed(String)
     case noData

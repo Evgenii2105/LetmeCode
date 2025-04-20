@@ -17,8 +17,8 @@ class FilmsListViewController: UIViewController {
     
     // MARK: - Properties
     var presenter: FilmsListPresenter?
-    private let years = Array(1990...2025)
     private var currentSorted: Sorted = .sortedDefault
+    private var films: [FilmsListItem] = []
     
     // MARK: - UI Components
     private let searchTextFild: UITextField = {
@@ -87,7 +87,7 @@ class FilmsListViewController: UIViewController {
         )
         return sortedButton
     }()
-        
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -96,6 +96,7 @@ class FilmsListViewController: UIViewController {
         setupDelegate()
         setupUI()
         createListFilmsTable()
+        presenter?.setupDataSource()
     }
     
     private func setupNavigationBar() {
@@ -162,9 +163,9 @@ class FilmsListViewController: UIViewController {
     private func tapSortedButton() {
         sortedButton.showsMenuAsPrimaryAction = true
         
-        let sortedDefault = UIAction(title: "Сортировка по годам",
+        let sortedDefault = UIAction(title: "Сортировка по умолчанию",
                                      state: currentSorted == .sortedDefault ? .on : .off,
-                                   handler: { [weak self] _ in
+                                     handler: { [weak self] _ in
             self?.currentSorted = .sortedDefault
             self?.tapSortedButton()
         })
@@ -187,9 +188,15 @@ class FilmsListViewController: UIViewController {
     
     @objc
     private func toggleYearPicker() {
-        let pickerVC = GenericPickerViewController.makePickerController(
-            with: years.map { String($0) })
+        var years: [GenericPickerViewController.YearFilter] = [.allYears]
+        var array = Array(1990...2025).map({ GenericPickerViewController.YearFilter.specificYear($0) })
+        years.append(contentsOf: array)
         
+        let pickerVC = GenericPickerViewController.makePickerController(with: years)
+          if let navVC = pickerVC as? UINavigationController,
+             let yearPickerVC = navVC.topViewController as? GenericPickerViewController {
+              yearPickerVC.delegate = self
+          }
         present(pickerVC, animated: true)
     }
     
@@ -211,21 +218,27 @@ class FilmsListViewController: UIViewController {
 
 extension FilmsListViewController: FilmsListView {
     
+    func didLoadFilms(films: [FilmsListItem]) {
+        self.films = films
+        listFilmsTable.reloadData()
+    }
 }
 
 // MARK: UITableViewDelegate & DataSourse
 extension FilmsListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        presenter?.films.count ?? 0
+        return films.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CustomCell.filmCellIdentifier,
                                                        for: indexPath) as? CustomCell,
-              let film = presenter?.films[indexPath.row] else {
+              indexPath.row < films.count
+              else {
             return UITableViewCell()
         }
+        let film = films[indexPath.row]
         cell.configure(with: film)
         return cell
     }
@@ -238,15 +251,15 @@ extension FilmsListViewController: UITableViewDelegate, UITableViewDataSource {
         
         tableView.deselectRow(at: indexPath, animated: true)
         
-        guard let film = presenter?.films[indexPath.row] else { return }
+        let film = films[indexPath.row]
         
         let detailFilmsVC = FilmDetailsViewController()
-        let presenterFilmsVC = presenter?.makeFilmsDetailPresenter(film: film)
+        // let presenterFilmsVC = presenter?.makeFilmsDetailPresenter(film: film)
         
-        detailFilmsVC.presenter = presenterFilmsVC
-        presenterFilmsVC?.view = detailFilmsVC
+//        detailFilmsVC.presenter = presenterFilmsVC
+//        presenterFilmsVC?.view = detailFilmsVC
         
-        navigationController?.pushViewController(detailFilmsVC, animated: true)
+        // navigationController?.pushViewController(detailFilmsVC, animated: true)
     }
 }
 
@@ -263,8 +276,7 @@ extension FilmsListViewController: UITextFieldDelegate {
 
 extension FilmsListViewController: CustomPickerDelegate {
     
-    func didSelectYear(year: Int) {
-        yearButton.setTitle("\(year)", for: .normal)
-        yearButton.semanticContentAttribute = .forceRightToLeft
+    func didSelectYear(year: GenericPickerViewController.YearFilter) {
+        yearButton.setTitle(year.stringValue, for: .normal)
     }
 }

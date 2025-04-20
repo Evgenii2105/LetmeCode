@@ -18,10 +18,10 @@ class FilmDetailsPresenterImpl: FilmDetailsPresenter {
     }
     
     func setupDataSourse() {
-        let title = film.title
-        let rating = film.rating
-        let cellTypes = film.toCellTypes()
+//        let title = film.title
+//        let rating = film.rating
+//        let cellTypes = film.toCellTypes()
 
-        view?.showFilmDetails(title: title, rating: rating, cellTypes: cellTypes)
+       // view?.showFilmDetails(title: title, rating: rating, cellTypes: cellTypes)
     }
 }

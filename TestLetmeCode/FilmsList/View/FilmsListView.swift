@@ -8,9 +8,5 @@
 import Foundation
 
 protocol FilmsListView: AnyObject {
-    
-}
-
-protocol CustomPickerDelegate: AnyObject {
-    func didSelectYear(year: Int)
+    func didLoadFilms(films: [FilmsListItem])
 }

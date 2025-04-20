@@ -8,15 +8,10 @@
 import UIKit
 
 class FilmsListPresenterImpl: FilmsListPresenter {
-   
+  
     weak var view: FilmsListView?
-    
     weak var delegate: FilmsListDelegate?
-   
-    var films: [Film] = [
-        Film(title: "Во все тяжкие", genre: "драма", year: 2008, country: "США", rating: 9.5),
-        Film(title: "Друзья", genre: "комедия", year: 1998, country: "USA", rating: 9.8)
-    ]
+    private let dataManagerService: DataManagerService = DataManagerServiceImpl()
     
     func makeFilmsDetailPresenter(film: Film) -> FilmDetailsPresenterImpl {
         return FilmDetailsPresenterImpl(film: film)
@@ -24,5 +19,16 @@ class FilmsListPresenterImpl: FilmsListPresenter {
     
     func performLogaut() {
         delegate?.didLogout()
+    }
+    
+    func setupDataSource() {
+        dataManagerService.getFilms { [weak self] result in
+            switch result {
+            case .success(let films):
+                self?.view?.didLoadFilms(films: films.map({ $0.toListItem() }))
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
 }

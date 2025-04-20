@@ -7,19 +7,22 @@
 
 import Foundation
 
-protocol NetWork: AnyObject {
-    func request(endPoint: NetWorkImpl.EndPoint, completion: @escaping (Result<Data, NetWorkError>) -> ())
-}
+//protocol Network: AnyObject {
+//    func request(endPoint: NetworkImpl.EndPoint,
+//                               completion: @escaping (Result<Data, NetworkError>) -> Void)
+//}
 
-class NetWorkImpl: NetWork {
+class NetworkImpl {
     
-    func request(endPoint: EndPoint, completion: @escaping (Result<Data, NetWorkError>) -> ()) {
+    func request<T: Decodable>(endPoint: EndPoint,
+                               completion: @escaping (Result<T, NetworkError>) -> Void) {
         guard let urlRequest = createRequest(endPoint: endPoint) else { return completion(.failure(.invalidURL)) }
         
         request(urlRequest: urlRequest, completion: completion)
     }
     
-    private func request<T: Decodable>(urlRequest: URLRequest, completion: @escaping (Result<T, NetWorkError>) -> ()) {
+    private func request<T: Decodable>(urlRequest: URLRequest,
+                                       completion: @escaping (Result<T, NetworkError>) -> ()) {
         let task = URLSession.shared.dataTask(with: urlRequest) {
             data, _, error  in
             guard let data = data else { return completion(.failure(.noData)) }
@@ -47,6 +50,8 @@ class NetWorkImpl: NetWork {
         guard let url = urlComponents.url else { return nil}
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = endPoint.method.rawValue
+        urlRequest.setValue("de1db718-950e-449d-88a1-39a41062cee6", forHTTPHeaderField: "X-API-KEY")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         return urlRequest
     }
     
@@ -72,11 +77,11 @@ class NetWorkImpl: NetWork {
         var path: String {
             switch self {
             case .films:
-                return "api/v2.2/films"
+                return "/api/v2.2/films"
             case .detailsFilm(let id):
-                return "v2.2/films/\(id)"
+                return "/v2.2/films/\(id)"
             case .movieFilm(let id):
-                return "v2.2/films/\(id)/images"
+                return "/v2.2/films/\(id)/images"
             }
         }
         

@@ -5,36 +5,59 @@
 //  Created by Евгений Фомичев on 19.04.2025.
 //
 
+protocol CustomPickerDelegate: AnyObject {
+    func didSelectYear(year: GenericPickerViewController.YearFilter)
+}
+
 import UIKit
 
 final class GenericPickerViewController: UIViewController {
     
+    enum YearFilter {
+        case allYears
+        case specificYear(Int)
+        
+        var stringValue: String {
+            switch self {
+            case .allYears:
+                return "Все года"
+            case .specificYear(let year):
+                return String(year)
+            }
+        }
+    }
+    
+    private var selectedFilter: YearFilter = .allYears
     private let pickerView: UIPickerView
-    private let items: [String]
+    private let filters: [YearFilter]
     weak var delegate: CustomPickerDelegate?
     
-    init(with title: String? = nil, items: [String]) {
+    init(with title: String? = nil, items: [YearFilter]) {
         self.pickerView = UIPickerView()
-        self.items = items
+        self.filters = items
         super.init(nibName: nil, bundle: nil)
         navigationItem.title = title
         pickerView.delegate = self
         pickerView.dataSource = self
+        
+        
+        let doneButton = UIBarButtonItem(
+            title: "Готово",
+            style: .done,
+            target: self,
+            action: #selector(doneTapped)
+        )
+        navigationItem.rightBarButtonItem = doneButton
     }
     
-    static func makePickerController(with items: [String]) -> UIViewController {
-        let picker = GenericPickerViewController(with: "Select Year", items: items)
+    static func makePickerController(with items: [YearFilter]) -> UIViewController {
+        let picker = GenericPickerViewController(with: "Выбор года", items: items)
         let navigationController = UINavigationController(rootViewController: picker)
         if let sheet = navigationController.sheetPresentationController {
             sheet.detents = [.medium()]
             sheet.prefersGrabberVisible = true
         }
         return navigationController
-    }
-    
-    @available(*, unavailable)
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        fatalError("init(nibName:bundle:) has not been implemented")
     }
     
     @available(*, unavailable)
@@ -50,7 +73,19 @@ final class GenericPickerViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        pickerView.frame = view.bounds
+        
+        pickerView.frame = CGRect(
+            x: 0,
+            y: 0,
+            width: view.bounds.width,
+            height: view.bounds.height
+        )
+    }
+    
+    @objc
+    private func doneTapped() {
+        delegate?.didSelectYear(year: selectedFilter)
+        dismiss(animated: true)
     }
 }
 
@@ -59,10 +94,7 @@ final class GenericPickerViewController: UIViewController {
 extension GenericPickerViewController: UIPickerViewDelegate {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if let year = Int(items[row]) {
-                   delegate?.didSelectYear(year: year)
-               }
-         dismiss(animated: true)
+        selectedFilter = filters[row]
     }
 }
 
@@ -71,7 +103,7 @@ extension GenericPickerViewController: UIPickerViewDelegate {
 extension GenericPickerViewController: UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        items.count
+        filters.count
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -79,6 +111,8 @@ extension GenericPickerViewController: UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-        NSAttributedString(string: items[row], attributes: [.foregroundColor: UIColor.label])
+        NSAttributedString(
+            string: filters[row].stringValue,
+            attributes: [.foregroundColor: UIColor.label])
     }
 }

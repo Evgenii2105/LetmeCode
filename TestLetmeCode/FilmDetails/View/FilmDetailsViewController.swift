@@ -11,7 +11,7 @@ class FilmDetailsViewController: UIViewController {
     
     var presenter: FilmDetailsPresenter?
     
-    private var cellTypes: [Film.FildDetailCellType] = []
+    private var cellTypes: [FilmDetailCellType] = []
     
     private let imageFilms: UIImageView = {
         let imageFilms = UIImageView()
@@ -98,7 +98,7 @@ class FilmDetailsViewController: UIViewController {
 
 extension FilmDetailsViewController: FilmDetailsView {
     
-    func showFilmDetails(title: String, rating: Decimal, cellTypes: [Film.FildDetailCellType]) {
+    func showFilmDetails(title: String, rating: Decimal, cellTypes: [FilmDetailCellType]) {
         titleLabel.text = title
         ratingLabel.text = "\(rating)"
         self.cellTypes = cellTypes
@@ -133,7 +133,7 @@ extension FilmDetailsViewController: UITableViewDelegate, UITableViewDataSource 
                 return UITableViewCell()
             }
             cell.selectionStyle = .none
-            cell.configure(genre: genre, year: year, country: country)
+            // cell.configure(genre: genre, year: year, country: country)
             return cell
             
         case .pictures(let imageNames):

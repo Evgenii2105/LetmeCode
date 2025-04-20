@@ -49,3 +49,4 @@ extension LoginPresenterImpl: FilmsListDelegate {
         view?.clearFields()
     }
 }
+

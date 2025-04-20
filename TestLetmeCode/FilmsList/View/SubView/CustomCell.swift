@@ -95,11 +95,12 @@ class CustomCell: UITableViewCell {
         ])
     }
     
-    func configure(with film: Film) {
+    func configure(with film: FilmsListItem) {
         filmImageView.image = UIImage(systemName: "film")?.withRenderingMode(.alwaysTemplate)
-        titleLabel.text = film.title
-        genreLabel.text = film.genre
-        detailsLabel.text = "\(film.year) • \(film.country)"
-        raitingLabel.text = "★ \(film.rating)"
+        titleLabel.text = film.name
+        genreLabel.text = film.genres.map({ $0.genre }).joined(separator: ",")
+        let countries = film.countries.map { $0.country }.joined(separator: ",")
+        detailsLabel.text = "\(film.year) • \(countries)"
+        raitingLabel.text = "★ \(film.ratingKinopoisk)"
     }
 }

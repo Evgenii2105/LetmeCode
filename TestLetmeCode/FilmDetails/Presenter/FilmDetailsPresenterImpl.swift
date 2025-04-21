@@ -11,17 +11,49 @@ class FilmDetailsPresenterImpl: FilmDetailsPresenter {
     
     weak var view: FilmDetailsView?
     
-    let film: Film
+    private let filmDetails: FilmDetails
     
-    init(film: Film) {
-        self.film = film
+    init(filmDetails: FilmDetails) {
+        self.filmDetails = filmDetails
     }
     
     func setupDataSourse() {
-//        let title = film.title
-//        let rating = film.rating
+        
+        let title =  [
+            filmDetails.nameOriginal,
+            filmDetails.nameEn,
+            filmDetails.nameRu
+        ]
+            .compactMap({ $0 })
+            .filter({ !$0.isEmpty })
+            .first
+        
+        view?.showFilmDetails(
+            title: title ?? "Без названия",
+            rating: filmDetails.ratingKinopoisk,
+            cellTypes: filmDetails.toCellTypes(),
+            imageUrl: filmDetails.coverUrl
+        )
+        
+//        let movie = film.posterUrl
+//        let title =  [
+//            film.nameOriginal,
+//            film.nameEn,
+//            film.nameRu
+//        ]
+//            .compactMap({ $0 })
+//            .filter({ !$0.isEmpty })
+//            .first
+//        let rating = film.ratingKinopoisk
 //        let cellTypes = film.toCellTypes()
-
-       // view?.showFilmDetails(title: title, rating: rating, cellTypes: cellTypes)
+//        let detailMovie = film.posterUrl
+//        
+//        view?.showFilmDetails(
+//            title: title ?? "",
+//            rating: rating,
+//            cellTypes: cellTypes,
+//            imageUrl: movie,
+//            imagePreview: detailMovie
+//        )
     }
 }

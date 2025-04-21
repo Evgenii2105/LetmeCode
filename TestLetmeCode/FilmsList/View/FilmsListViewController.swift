@@ -170,14 +170,14 @@ class FilmsListViewController: UIViewController {
             self?.tapSortedButton()
         })
         
-        let sortedDescending = UIAction(title: "Сортировка по убыванию",
+        let sortedDescending = UIAction(title: "Сортировка по убыванию рейтинга",
                                         state: currentSorted == .sortedDescending ? .on : .off,
                                         handler: { [weak self] _ in
             self?.currentSorted = .sortedDescending
             self?.tapSortedButton()
         })
         
-        let sortedAscending = UIAction(title: "Сортировка по возрастанию",
+        let sortedAscending = UIAction(title: "Сортировка по возрастанию рейтинга",
                                        state: currentSorted == .sortedAscending ? .on : .off,
                                        handler: { [weak self] _ in
             self?.currentSorted = .sortedAscending
@@ -189,14 +189,14 @@ class FilmsListViewController: UIViewController {
     @objc
     private func toggleYearPicker() {
         var years: [GenericPickerViewController.YearFilter] = [.allYears]
-        var array = Array(1990...2025).map({ GenericPickerViewController.YearFilter.specificYear($0) })
+        let array = Array(1990...2025).map({ GenericPickerViewController.YearFilter.specificYear($0) })
         years.append(contentsOf: array)
         
         let pickerVC = GenericPickerViewController.makePickerController(with: years)
-          if let navVC = pickerVC as? UINavigationController,
-             let yearPickerVC = navVC.topViewController as? GenericPickerViewController {
-              yearPickerVC.delegate = self
-          }
+        if let navVC = pickerVC as? UINavigationController,
+           let yearPickerVC = navVC.topViewController as? GenericPickerViewController {
+            yearPickerVC.delegate = self
+        }
         present(pickerVC, animated: true)
     }
     
@@ -218,6 +218,14 @@ class FilmsListViewController: UIViewController {
 
 extension FilmsListViewController: FilmsListView {
     
+    func didConfigureDetailsPresenter(detailsPresenter: FilmDetailsPresenterImpl) {
+        let detailsVC = FilmDetailsViewController()
+        detailsPresenter.view = detailsVC
+        detailsVC.presenter = detailsPresenter
+        
+        navigationController?.pushViewController(detailsVC, animated: true)
+    }
+    
     func didLoadFilms(films: [FilmsListItem]) {
         self.films = films
         listFilmsTable.reloadData()
@@ -235,9 +243,10 @@ extension FilmsListViewController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CustomCell.filmCellIdentifier,
                                                        for: indexPath) as? CustomCell,
               indexPath.row < films.count
-              else {
+        else {
             return UITableViewCell()
         }
+        
         let film = films[indexPath.row]
         cell.configure(with: film)
         return cell
@@ -251,15 +260,7 @@ extension FilmsListViewController: UITableViewDelegate, UITableViewDataSource {
         
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let film = films[indexPath.row]
-        
-        let detailFilmsVC = FilmDetailsViewController()
-        // let presenterFilmsVC = presenter?.makeFilmsDetailPresenter(film: film)
-        
-//        detailFilmsVC.presenter = presenterFilmsVC
-//        presenterFilmsVC?.view = detailFilmsVC
-        
-        // navigationController?.pushViewController(detailFilmsVC, animated: true)
+        presenter?.makeFilmsDetailPresenter(at: indexPath.row)
     }
 }
 

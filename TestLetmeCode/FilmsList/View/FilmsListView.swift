@@ -9,4 +9,5 @@ import Foundation
 
 protocol FilmsListView: AnyObject {
     func didLoadFilms(films: [FilmsListItem])
+    func didConfigureDetailsPresenter(detailsPresenter: FilmDetailsPresenterImpl)
 }

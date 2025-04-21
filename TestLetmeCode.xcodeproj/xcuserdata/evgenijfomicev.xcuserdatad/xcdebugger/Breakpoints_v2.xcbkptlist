@@ -30,8 +30,8 @@
             filePath = "TestLetmeCode/FilmsList/View/FilmsListViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "263"
-            endingLineNumber = "263"
+            startingLineNumber = "264"
+            endingLineNumber = "264"
             landmarkName = "tableView(_:didSelectRowAt:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -87,48 +87,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C757316C-FA6B-483F-9189-820A092DEC42"
+            uuid = "DE095BF2-A7AF-4E42-B32D-C3F5E4D09D3C"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TestLetmeCode/Models/Film.swift"
+            filePath = "TestLetmeCode/FilmDetails/View/SubView/PicturesTableViewCell.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "61"
-            endingLineNumber = "61"
-            landmarkName = "init(from:)"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
+            landmarkName = "collectionView(_:cellForItemAt:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "EE5EFEA3-68BB-49DE-BA6D-79DAD3731AE0"
+            uuid = "9327BC21-6B1F-413E-8D7A-7955A1494C34"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TestLetmeCode/Models/FilmListResponce.swift"
+            filePath = "TestLetmeCode/FilmDetails/View/FilmDetailsViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "23"
-            endingLineNumber = "23"
-            landmarkName = "init(from:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "C7F42F65-325A-4952-95D8-C4D01AE1F752"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "TestLetmeCode/BusinessLogic/Network/Network.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
-            landmarkName = "request(urlRequest:completion:)"
+            startingLineNumber = "106"
+            endingLineNumber = "106"
+            landmarkName = "showFilmDetails(title:rating:cellTypes:imageUrl:imagePreview:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

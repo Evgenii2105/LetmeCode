@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 //protocol Network: AnyObject {
 //    func request(endPoint: NetworkImpl.EndPoint,
@@ -13,6 +14,20 @@ import Foundation
 //}
 
 class NetworkImpl {
+    
+    static func downloadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard
+                let data = data,
+                error == nil,
+                let image = UIImage(data: data)
+            else {
+                completion(nil)
+                return
+            }
+            completion(image)
+        }.resume()
+    }
     
     func request<T: Decodable>(endPoint: EndPoint,
                                completion: @escaping (Result<T, NetworkError>) -> Void) {
@@ -79,7 +94,7 @@ class NetworkImpl {
             case .films:
                 return "/api/v2.2/films"
             case .detailsFilm(let id):
-                return "/v2.2/films/\(id)"
+                return "/api/v2.2/films/\(id)"
             case .movieFilm(let id):
                 return "/v2.2/films/\(id)/images"
             }

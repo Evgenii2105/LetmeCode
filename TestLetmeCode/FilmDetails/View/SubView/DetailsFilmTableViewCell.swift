@@ -33,6 +33,7 @@ class DetailsFilmTableViewCell: UITableViewCell {
     
     private let movieDescription: UILabel = {
         let movieDescription = UILabel()
+        movieDescription.numberOfLines = 0
         movieDescription.textColor = .white
         movieDescription.translatesAutoresizingMaskIntoConstraints = false
         return movieDescription
@@ -74,12 +75,9 @@ class DetailsFilmTableViewCell: UITableViewCell {
             movieDescription.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
             movieDescription.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
         ])
-        
-        print(linkButton)
     }
     
-    func configure(description: String, link: URL?) {
-        movieDescription.text = description
-        // linkButton.isHidden
+    func configure( discription: String?, link: URL?) {
+        movieDescription.text = discription
     }
 }

@@ -9,24 +9,6 @@ import Foundation
 
 struct Film: Decodable {
     
-    struct Country: Decodable {
-        
-        let country: String
-        
-        enum CodingKeys: String, CodingKey {
-            case country = "country"
-        }
-    }
-    
-    struct Genre: Decodable {
-        
-        let genre: String
-        
-        enum CodingKeys: String, CodingKey {
-            case genre = "genre"
-        }
-    }
-        
     enum CodingKeys: String, CodingKey { // Сделано специально
         case kinopoiskId = "kinopoiskId"
         case imdbId = "imdbId"
@@ -64,8 +46,8 @@ struct Film: Decodable {
         self.nameRu = try container.decodeIfPresent(String.self, forKey: .nameRu)
         self.nameEn = try container.decodeIfPresent(String.self, forKey: .nameEn)
         self.nameOriginal = try container.decodeIfPresent(String.self, forKey: .nameOriginal)
-        self.countries = try container.decode([Film.Country].self, forKey: .countries)
-        self.genres = try container.decode([Film.Genre].self, forKey: .genres)
+        self.countries = try container.decode([Country].self, forKey: .countries)
+        self.genres = try container.decode([Genre].self, forKey: .genres)
         self.ratingKinopoisk = try container.decode(Decimal.self, forKey: .ratingKinopoisk)
         self.ratingImdb = try container.decodeIfPresent(Decimal.self, forKey: .ratingImdb)
         self.year = try container.decode(Int.self, forKey: .year)
@@ -77,16 +59,6 @@ struct Film: Decodable {
 
 extension Film {
     
-    func toCellTypes() -> [FilmDetailCellType] {
-        return [
-            .description(text: "Описание фильма", link: nil),
-            .genreAndYear(genres: genres.map({ GenreItem(genre: $0) }),
-                          year: year,
-                          country: countries.map({ CountryItem(country: $0) })),
-            .pictures(imageNames: [])
-        ]
-    }
-    
     func toListItem() -> FilmsListItem {
         return FilmsListItem(
             name: nameRu ?? nameEn ?? nameOriginal,
@@ -94,7 +66,7 @@ extension Film {
             genres: genres.map({ GenreItem(genre: $0) }),
             ratingKinopoisk: ratingKinopoisk,
             year: year,
-            posterUrlPreview: posterUrlPreview
+            posterUrlPreview: posterUrlPreview as NSURL? as URL?
         )
     }
 }

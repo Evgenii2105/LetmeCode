@@ -8,7 +8,7 @@
 import Foundation
 
 protocol FilmsListPresenter: AnyObject {
-    func makeFilmsDetailPresenter(film: Film) -> FilmDetailsPresenterImpl
+    func makeFilmsDetailPresenter(at index: Int) 
     func performLogaut()
     func setupDataSource()
 }

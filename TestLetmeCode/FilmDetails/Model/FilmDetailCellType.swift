@@ -11,7 +11,7 @@ struct GenreItem {
     
     let genre: String
     
-    init(genre: Film.Genre) {
+    init(genre: Genre) {
         self.genre = genre.genre
     }
 }
@@ -20,13 +20,14 @@ struct CountryItem {
     
     let country: String
     
-    init(country: Film.Country) {
+    init(country: Country) {
         self.country = country.country
     }
 }
 
 enum FilmDetailCellType {
-    case description(text: String, link: URL?)
-    case genreAndYear(genres: [GenreItem], year: Int, country: [CountryItem])
-    case pictures(imageNames: [String])
+    case movieHeaderPicture(image: URL)
+    case description(link: URL?, description: String?)
+    case genreAndYear(genres: [GenreItem], startYear: Int?, endYear: Int?, country: [CountryItem])
+    case pictures(imageNames: [URL])
 }

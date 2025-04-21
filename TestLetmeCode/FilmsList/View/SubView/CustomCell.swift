@@ -10,8 +10,9 @@ import UIKit
 class CustomCell: UITableViewCell {
     
     static let filmCellIdentifier = "customCellFilm"
+    private static let cache = NSCache<NSURL, UIImage>()
     
-    private let filmImageView: UIImageView = {
+    private var filmImageView: UIImageView = {
         let filmImageView = UIImageView()
         filmImageView.contentMode = .scaleAspectFill
         filmImageView.clipsToBounds = true
@@ -24,6 +25,8 @@ class CustomCell: UITableViewCell {
         titleLabel.font = .systemFont(ofSize: 18, weight: .bold)
         titleLabel.textColor = .white
         titleLabel.numberOfLines = 0
+        titleLabel.textAlignment = .center
+        titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         return titleLabel
     }()
@@ -32,6 +35,9 @@ class CustomCell: UITableViewCell {
         let genreLabel = UILabel()
         genreLabel.font = .systemFont(ofSize: 14)
         genreLabel.textColor = .lightGray
+        genreLabel.numberOfLines = 0
+        genreLabel.textAlignment = .center
+        genreLabel.lineBreakMode = .byWordWrapping
         genreLabel.translatesAutoresizingMaskIntoConstraints = false
         return genreLabel
     }()
@@ -40,6 +46,9 @@ class CustomCell: UITableViewCell {
         let detailsLabel = UILabel()
         detailsLabel.font = .systemFont(ofSize: 14, weight: .bold)
         detailsLabel.textColor = .lightGray
+        detailsLabel.numberOfLines = 0
+        detailsLabel.textAlignment = .center
+        detailsLabel.lineBreakMode = .byWordWrapping
         detailsLabel.translatesAutoresizingMaskIntoConstraints = false
         return detailsLabel
     }()
@@ -48,6 +57,7 @@ class CustomCell: UITableViewCell {
         let raitingLabel = UILabel()
         raitingLabel.font = .systemFont(ofSize: 16, weight: .bold)
         raitingLabel.textColor = .systemBlue
+        raitingLabel.textAlignment = .center
         raitingLabel.translatesAutoresizingMaskIntoConstraints = false
         return raitingLabel
     }()
@@ -84,23 +94,49 @@ class CustomCell: UITableViewCell {
             raitingLabel.widthAnchor.constraint(equalToConstant: 60),
             
             titleLabel.topAnchor.constraint(equalTo: filmImageView.topAnchor),
-            titleLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: filmImageView.trailingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -76),
             
             genreLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            genreLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            genreLabel.leadingAnchor.constraint(equalTo: filmImageView.trailingAnchor, constant: 16),
+            genreLabel.trailingAnchor.constraint(equalTo: raitingLabel.leadingAnchor, constant: -16),
             
             detailsLabel.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 8),
-            detailsLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            detailsLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -16)
+            detailsLabel.leadingAnchor.constraint(equalTo: filmImageView.trailingAnchor, constant: 16),
+            detailsLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            detailsLabel.trailingAnchor.constraint(equalTo: raitingLabel.leadingAnchor, constant: -16)
         ])
     }
     
     func configure(with film: FilmsListItem) {
-        filmImageView.image = UIImage(systemName: "film")?.withRenderingMode(.alwaysTemplate)
         titleLabel.text = film.name
-        genreLabel.text = film.genres.map({ $0.genre }).joined(separator: ",")
-        let countries = film.countries.map { $0.country }.joined(separator: ",")
+        genreLabel.text = film.genres.map({ $0.genre }).joined(separator: ", ")
+        let countries = film.countries.map { $0.country }.joined(separator: ", ")
         detailsLabel.text = "\(film.year) • \(countries)"
         raitingLabel.text = "★ \(film.ratingKinopoisk)"
+        
+        guard let imageUrl = film.posterUrlPreview else {
+            filmImageView.image = nil
+            return
+        }
+        
+        if let image = Self.cache.object(forKey: film.posterUrlPreview! as NSURL) {
+            filmImageView.image = image
+        } else {
+            filmImageView.image = UIImage(systemName: "placeholder")
+            NetworkImpl.downloadImage(from: imageUrl as URL) { [weak self] image in
+                guard let self = self else { return }
+                
+                if let downloadedImage = image {
+                    Self.cache.setObject(downloadedImage, forKey: imageUrl as NSURL)
+                    
+                    DispatchQueue.main.async {
+                        if self.titleLabel.text == film.name {
+                            self.filmImageView.image = downloadedImage
+                        }
+                    }
+                }
+            }
+        }
     }
 }

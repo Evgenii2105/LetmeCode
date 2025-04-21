@@ -14,7 +14,7 @@ class GenreYearTableViewCell: UITableViewCell {
     private let genreLabel: UILabel = {
         let genreLabel = UILabel()
         genreLabel.textColor = .lightGray
-        genreLabel.numberOfLines = 1
+        genreLabel.numberOfLines = 0
         genreLabel.translatesAutoresizingMaskIntoConstraints = false
         return genreLabel
     }()
@@ -22,14 +22,14 @@ class GenreYearTableViewCell: UITableViewCell {
     private let yearLabel: UILabel = {
         let yearLabel = UILabel()
         yearLabel.textColor = .lightGray
-        yearLabel.numberOfLines = 1
+        yearLabel.numberOfLines = 0
         yearLabel.translatesAutoresizingMaskIntoConstraints = false
         return yearLabel
     }()
     
     private let countryLabel: UILabel = {
         let countryLabel = UILabel()
-        countryLabel.numberOfLines = 1
+        countryLabel.numberOfLines = 0
         countryLabel.textColor = .lightGray
         countryLabel.translatesAutoresizingMaskIntoConstraints = false
         return countryLabel
@@ -72,9 +72,19 @@ class GenreYearTableViewCell: UITableViewCell {
         ])
     }
     
-    func configure(genre: String, year: Decimal, country: String) {
-        genreLabel.text = genre
-        yearLabel.text = "\(year) •"
-        countryLabel.text = country
+    func configure(genres: [GenreItem], countries: [CountryItem], startYear: Int?, endYear: Int?) {
+        genreLabel.text = genres.map({ $0.genre }).joined(separator: ", ")
+        countryLabel.text = countries.map({ $0.country }).joined(separator: ", ")
+        var yearText = ""
+        if let startYear = startYear {
+            yearText += "\(startYear)"
+        }
+        if let endYear = endYear {
+            if !yearText.isEmpty {
+                yearText += " - "
+            }
+            yearText += "\(endYear)"
+        }
+        yearLabel.text = yearText
     }
 }

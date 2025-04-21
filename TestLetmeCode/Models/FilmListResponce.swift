@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FilmListResponce: Decodable {
+struct FilmListResponse: Decodable {
     
     enum CodingKeys: String, CodingKey {
         case total = "total"

@@ -21,7 +21,7 @@ class FilmsListViewController: UIViewController {
     private var films: [FilmsListItem] = []
     
     // MARK: - UI Components
-    private let searchTextFild: UITextField = {
+    private lazy var searchTextFild: UITextField = {
         let searchTextFild = UITextField()
         searchTextFild.attributedPlaceholder = NSAttributedString(
             string: "Поиск фильмов",
@@ -30,33 +30,44 @@ class FilmsListViewController: UIViewController {
         searchTextFild.borderStyle = .roundedRect
         searchTextFild.layer.borderWidth = 1
         searchTextFild.layer.borderColor = UIColor.lightGray.cgColor
+        searchTextFild.layer.cornerRadius = 8
         searchTextFild.backgroundColor = .black
         searchTextFild.textColor = .white
         
-        let searchIcon = UIImageView(image: UIImage(systemName: "magnifyingglass"))
-        searchIcon.tintColor = .lightGray
+        let searchButton = UIButton(type: .custom)
+        let searchImage = UIImage(systemName: "magnifyingglass")
+        searchButton.setImage(searchImage, for: .normal)
+        searchButton.tintColor = .cyan
+        searchButton.frame = CGRect(x: 0, y: 0, width: 40, height: 30)
         
-        let iconContainer = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 30))
-        searchIcon.frame = CGRect(x: 10, y: 5, width: 20, height: 20)
-        iconContainer.addSubview(searchIcon)
+        searchButton.addTarget(self, action: #selector(tappedSearchButton), for: .touchUpInside)
         
-        searchTextFild.rightView = iconContainer
+        let buttonContainer = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 30))
+        searchButton.frame = CGRect(x: 10, y: 5, width: 20, height: 20)
+        buttonContainer.addSubview(searchButton)
+        
+        searchTextFild.rightView = buttonContainer
         searchTextFild.rightViewMode = .always
         
         return searchTextFild
     }()
     
     private lazy var yearButton: UIButton = {
-        let yearButton = UIButton()
-        let image = UIImage(systemName: "chevron.down")
-        yearButton.setTitle("Фильмы по годам", for: .normal)
-        yearButton.setImage(image, for: .normal)
-        yearButton.setTitleColor(.white, for: .normal)
+        var config = UIButton.Configuration.plain()
+        config.title = "Фильмы по годам"
+        config.image = UIImage(systemName: "chevron.down")?
+            .withTintColor(.cyan, renderingMode: .alwaysOriginal)
+        config.imagePlacement = .trailing
+        config.imagePadding = 8
+        config.baseForegroundColor = .white
+        
+        let yearButton = UIButton(configuration: config)
         yearButton.backgroundColor = .black
         yearButton.layer.borderWidth = 1
+        yearButton.layer.cornerRadius = 8
         yearButton.layer.borderColor = UIColor.lightGray.cgColor
-        yearButton.semanticContentAttribute = .forceRightToLeft
         yearButton.addTarget(self, action: #selector(toggleYearPicker), for: .touchUpInside)
+        
         return yearButton
     }()
     
@@ -69,15 +80,21 @@ class FilmsListViewController: UIViewController {
     private lazy var exitButton: UIBarButtonItem = {
         let image = UIImage(systemName: "rectangle.portrait.and.arrow.right")?
             .withConfiguration(UIImage.SymbolConfiguration(weight: .bold))
-        return UIBarButtonItem(image: image,
-                               style: .plain,
-                               target: self,
-                               action: #selector(tappedExit))
+        let exitButton = UIBarButtonItem(
+            image: image,
+            style: .plain,
+            target: self,
+            action: #selector(tappedExit)
+        )
+        exitButton.tintColor = .cyan
+        return exitButton
     }()
     
     private lazy var sortedButton: UIButton = {
         let sortedButton = UIButton()
         let image = UIImage(systemName: "arrow.up.arrow.down")
+        sortedButton.setTitleColor(.cyan, for: .normal)
+        sortedButton.tintColor = .cyan
         sortedButton.setImage(image, for: .normal)
         sortedButton.addAction(
             UIAction { [weak self] _ in
@@ -103,7 +120,7 @@ class FilmsListViewController: UIViewController {
         let titleLabel = UILabel()
         titleLabel.text = "Кинопоиск"
         titleLabel.font = UIFont.systemFont(ofSize: 26, weight: .bold)
-        titleLabel.textColor = .systemBlue
+        titleLabel.textColor = .cyan
         titleLabel.sizeToFit()
         
         navigationItem.titleView = titleLabel
@@ -160,6 +177,11 @@ class FilmsListViewController: UIViewController {
     }
     
     @objc
+    private func tappedSearchButton() {
+        presenter?.search(with: searchTextFild.text)
+    }
+    
+    @objc
     private func tapSortedButton() {
         sortedButton.showsMenuAsPrimaryAction = true
         
@@ -168,6 +190,7 @@ class FilmsListViewController: UIViewController {
                                      handler: { [weak self] _ in
             self?.currentSorted = .sortedDefault
             self?.tapSortedButton()
+            self?.presenter?.sort(by: .sortedDefault)
         })
         
         let sortedDescending = UIAction(title: "Сортировка по убыванию рейтинга",
@@ -175,6 +198,7 @@ class FilmsListViewController: UIViewController {
                                         handler: { [weak self] _ in
             self?.currentSorted = .sortedDescending
             self?.tapSortedButton()
+            self?.presenter?.sort(by: .sortedDescending)
         })
         
         let sortedAscending = UIAction(title: "Сортировка по возрастанию рейтинга",
@@ -182,6 +206,7 @@ class FilmsListViewController: UIViewController {
                                        handler: { [weak self] _ in
             self?.currentSorted = .sortedAscending
             self?.tapSortedButton()
+            self?.presenter?.sort(by: .sortedAscending)
         })
         sortedButton.menu = UIMenu(title: "", children: [sortedDefault, sortedDescending, sortedAscending])
     }
@@ -253,14 +278,12 @@ extension FilmsListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        150
+        return 150
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        presenter?.makeFilmsDetailPresenter(at: indexPath.row)
+        presenter?.makeFilmsDetailPresenter(film: films[indexPath.row])
     }
 }
 
@@ -279,5 +302,6 @@ extension FilmsListViewController: CustomPickerDelegate {
     
     func didSelectYear(year: GenericPickerViewController.YearFilter) {
         yearButton.setTitle(year.stringValue, for: .normal)
+        presenter?.filter(by: year)
     }
 }

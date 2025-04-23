@@ -8,7 +8,7 @@
 import Foundation
 
 class LoginPresenterImpl: LoginPresenter {
-   
+    
     weak var view: LoginView?
     
     private let userStorage: UserStorage

@@ -56,7 +56,7 @@ class CustomCell: UITableViewCell {
     private let raitingLabel: UILabel = {
         let raitingLabel = UILabel()
         raitingLabel.font = .systemFont(ofSize: 16, weight: .bold)
-        raitingLabel.textColor = .systemBlue
+        raitingLabel.textColor = .cyan
         raitingLabel.textAlignment = .center
         raitingLabel.translatesAutoresizingMaskIntoConstraints = false
         return raitingLabel
@@ -89,13 +89,13 @@ class CustomCell: UITableViewCell {
             filmImageView.widthAnchor.constraint(equalToConstant: 80),
             filmImageView.heightAnchor.constraint(equalToConstant: 120),
             
-            raitingLabel.bottomAnchor.constraint(equalTo: filmImageView.bottomAnchor),
+            raitingLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             raitingLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             raitingLabel.widthAnchor.constraint(equalToConstant: 60),
             
-            titleLabel.topAnchor.constraint(equalTo: filmImageView.topAnchor),
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
             titleLabel.leadingAnchor.constraint(equalTo: filmImageView.trailingAnchor, constant: 16),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -76),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -92),
             
             genreLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             genreLabel.leadingAnchor.constraint(equalTo: filmImageView.trailingAnchor, constant: 16),
@@ -103,7 +103,7 @@ class CustomCell: UITableViewCell {
             
             detailsLabel.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 8),
             detailsLabel.leadingAnchor.constraint(equalTo: filmImageView.trailingAnchor, constant: 16),
-            detailsLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            detailsLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -16),
             detailsLabel.trailingAnchor.constraint(equalTo: raitingLabel.leadingAnchor, constant: -16)
         ])
     }

@@ -9,10 +9,11 @@ import UIKit
 
 class FilmDetailsViewController: UIViewController {
     
+    // MARK: - Properties
     var presenter: FilmDetailsPresenter?
-    
     private var cellTypes: [FilmDetailCellType] = []
     
+    // MARK: - UI Components
     private let imageFilms: UIImageView = {
         let imageFilms = UIImageView()
         
@@ -38,6 +39,7 @@ class FilmDetailsViewController: UIViewController {
         return movieDiscription
     }()
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -119,6 +121,7 @@ extension FilmDetailsViewController: FilmDetailsView {
     }
 }
 
+// MARK: UITableViewDelegate & DataSourse
 extension FilmDetailsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -143,13 +146,13 @@ extension FilmDetailsViewController: UITableViewDelegate, UITableViewDataSource 
             cell.configure(discription: description, link: link)
             return cell
             
-        case .genreAndYear(let genre, let startYear, let endYear, let country):
+        case .genreAndYear(let genre, let startYear, let endYear, let country, let year):
             guard let cell = tableView.dequeueReusableCell(withIdentifier: GenreYearTableViewCell.cellidentidire,
                                                            for: indexPath) as? GenreYearTableViewCell else {
                 return UITableViewCell()
             }
             cell.selectionStyle = .none
-            cell.configure(genres: genre, countries: country, startYear: startYear, endYear: endYear)
+            cell.configure(genres: genre, countries: country, startYear: startYear, endYear: endYear, year: year)
             return cell
             
         case .pictures(let imageUrls):

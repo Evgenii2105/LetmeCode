@@ -17,9 +17,11 @@ struct FilmDetails: Decodable {
     let endYear: Int?
     let ratingKinopoisk: Decimal
     let coverUrl: URL?
+    let posterUrl: URL?
     let nameRu: String?
     let nameEn: String?
-        
+    let year: Int?
+    
     enum CodingKeys: String, CodingKey {
         case nameOriginal = "nameOriginal"
         case nameRu = "nameRu"
@@ -29,8 +31,10 @@ struct FilmDetails: Decodable {
         case genres = "genres"
         case startYear = "startYear"
         case endYear = "endYear"
+        case year = "year"
         case ratingKinopoisk = "ratingKinopoisk"
         case coverUrl = "coverUrl"
+        case posterUrl = "posterUrl"
     }
     
     init(from decoder: any Decoder) throws {
@@ -45,6 +49,8 @@ struct FilmDetails: Decodable {
         endYear = try container.decodeIfPresent(Int.self, forKey: .endYear)
         ratingKinopoisk = try container.decode(Decimal.self, forKey: .ratingKinopoisk)
         coverUrl = try container.decodeIfPresent(URL.self, forKey: .coverUrl)
+        posterUrl = try container.decodeIfPresent(URL.self, forKey: .posterUrl)
+        year = try container.decodeIfPresent(Int.self, forKey: .year)
     }
 }
 
@@ -57,7 +63,8 @@ extension FilmDetails {
             .genreAndYear(genres: genre.map({ GenreItem(genre: $0) }),
                           startYear: startYear,
                           endYear: endYear,
-                          country: countries.map({ CountryItem(country: $0) })),
+                          country: countries.map({ CountryItem(country: $0) }),
+                          year: year),
             .pictures(imageNames: [coverUrl].compactMap({ $0 }))
         ]
     }

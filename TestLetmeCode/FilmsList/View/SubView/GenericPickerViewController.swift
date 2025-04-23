@@ -11,7 +11,7 @@ protocol CustomPickerDelegate: AnyObject {
 
 import UIKit
 
-final class GenericPickerViewController: UIViewController {
+class GenericPickerViewController: UIViewController {
     
     enum YearFilter {
         case allYears
@@ -39,7 +39,6 @@ final class GenericPickerViewController: UIViewController {
         navigationItem.title = title
         pickerView.delegate = self
         pickerView.dataSource = self
-        
         
         let doneButton = UIBarButtonItem(
             title: "Готово",

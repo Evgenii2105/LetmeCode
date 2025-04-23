@@ -9,6 +9,7 @@ import Foundation
 
 struct FilmsListItem {
     
+    let kinopoiskId: Int
     let name: String?
     let countries: [CountryItem]
     let genres: [GenreItem]

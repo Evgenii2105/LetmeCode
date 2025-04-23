@@ -26,7 +26,7 @@ class DetailsFilmTableViewCell: UITableViewCell {
         let linkButton = UIButton()
         let image = UIImage(systemName: "link")
         linkButton.setImage(image, for: .normal)
-        linkButton.tintColor = .white
+        linkButton.tintColor = .cyan
         linkButton.translatesAutoresizingMaskIntoConstraints = false
         return linkButton
     }()

@@ -8,11 +8,6 @@
 import Foundation
 import UIKit
 
-//protocol Network: AnyObject {
-//    func request(endPoint: NetworkImpl.EndPoint,
-//                               completion: @escaping (Result<Data, NetworkError>) -> Void)
-//}
-
 class NetworkImpl {
     
     static func downloadImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
@@ -46,9 +41,7 @@ class NetworkImpl {
             
             do {
                 let decodedData = try decoder.decode(T.self, from: data)
-                DispatchQueue.main.async {
-                    completion(.success(decodedData))
-                }
+                completion(.success(decodedData))
             } catch {
                 completion(.failure(.decodingFailed(error)))
             }
@@ -104,9 +97,9 @@ class NetworkImpl {
             switch self {
             case .films:
                 return .get
-            case .detailsFilm(let id):
+            case .detailsFilm(_):
                 return .get
-            case .movieFilm(let id):
+            case .movieFilm(_):
                 return .get
             }
         }

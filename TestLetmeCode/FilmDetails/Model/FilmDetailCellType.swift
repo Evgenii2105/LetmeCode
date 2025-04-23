@@ -28,6 +28,12 @@ struct CountryItem {
 enum FilmDetailCellType {
     case movieHeaderPicture(image: URL)
     case description(link: URL?, description: String?)
-    case genreAndYear(genres: [GenreItem], startYear: Int?, endYear: Int?, country: [CountryItem])
+    case genreAndYear(
+        genres: [GenreItem],
+        startYear: Int?
+        , endYear: Int?,
+        country: [CountryItem],
+        year: Int?
+    )
     case pictures(imageNames: [URL])
 }

@@ -32,28 +32,7 @@ class FilmDetailsPresenterImpl: FilmDetailsPresenter {
             title: title ?? "Без названия",
             rating: filmDetails.ratingKinopoisk,
             cellTypes: filmDetails.toCellTypes(),
-            imageUrl: filmDetails.coverUrl
+            imageUrl: filmDetails.posterUrl
         )
-        
-//        let movie = film.posterUrl
-//        let title =  [
-//            film.nameOriginal,
-//            film.nameEn,
-//            film.nameRu
-//        ]
-//            .compactMap({ $0 })
-//            .filter({ !$0.isEmpty })
-//            .first
-//        let rating = film.ratingKinopoisk
-//        let cellTypes = film.toCellTypes()
-//        let detailMovie = film.posterUrl
-//        
-//        view?.showFilmDetails(
-//            title: title ?? "",
-//            rating: rating,
-//            cellTypes: cellTypes,
-//            imageUrl: movie,
-//            imagePreview: detailMovie
-//        )
     }
 }

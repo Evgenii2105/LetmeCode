@@ -61,6 +61,7 @@ extension Film {
     
     func toListItem() -> FilmsListItem {
         return FilmsListItem(
+            kinopoiskId: kinopoiskId,
             name: nameRu ?? nameEn ?? nameOriginal,
             countries: countries.map({ CountryItem(country: $0) }),
             genres: genres.map({ GenreItem(genre: $0) }),

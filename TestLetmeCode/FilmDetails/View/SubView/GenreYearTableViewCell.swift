@@ -58,7 +58,6 @@ class GenreYearTableViewCell: UITableViewCell {
             genreLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
             genreLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             genreLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -8),
-            genreLabel.heightAnchor.constraint(equalToConstant: 28),
             
             yearLabel.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 8),
             yearLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
@@ -72,19 +71,28 @@ class GenreYearTableViewCell: UITableViewCell {
         ])
     }
     
-    func configure(genres: [GenreItem], countries: [CountryItem], startYear: Int?, endYear: Int?) {
+    func configure(genres: [GenreItem], countries: [CountryItem], startYear: Int?, endYear: Int?, year: Int?) {
         genreLabel.text = genres.map({ $0.genre }).joined(separator: ", ")
         countryLabel.text = countries.map({ $0.country }).joined(separator: ", ")
         var yearText = ""
+    
+        if let year = year {
+            if yearText.isEmpty {
+                yearText += "\(year)"
+            }
+        }
         if let startYear = startYear {
-            yearText += "\(startYear)"
+            if yearText.isEmpty {
+                yearText += "\(startYear)"
+            }
         }
         if let endYear = endYear {
             if !yearText.isEmpty {
                 yearText += " - "
+                yearText += "\(endYear)"
             }
-            yearText += "\(endYear)"
         }
-        yearLabel.text = yearText
+        yearLabel.text = "\(yearText)"
+        
     }
 }

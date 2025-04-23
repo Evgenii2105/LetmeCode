@@ -9,13 +9,15 @@ import UIKit
 
 class LoginViewController: UIViewController {
     
+    // MARK: - Properties
     var presenter: LoginPresenter?
     
+    // MARK: - UI Components
     private let titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.text = "Кинопоиск"
         titleLabel.font = .systemFont(ofSize: 32)
-        titleLabel.textColor = .systemBlue
+        titleLabel.textColor = .cyan
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         return titleLabel
@@ -42,12 +44,14 @@ class LoginViewController: UIViewController {
         let loginBitton = UIButton(type: .system)
         loginBitton.setTitle("Войти", for: .normal)
         loginBitton.setTitleColor(.white, for: .normal)
-        loginBitton.backgroundColor = .systemBlue
+        loginBitton.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
+        loginBitton.backgroundColor = .cyan
         loginBitton.layer.cornerRadius = 8
         loginBitton.translatesAutoresizingMaskIntoConstraints = false
         return loginBitton
     }()
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -94,6 +98,7 @@ class LoginViewController: UIViewController {
         userPassword.delegate = self
     }
     
+    // MARK: - Actions
     private func tapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
          view.addGestureRecognizer(tapGesture)
@@ -122,6 +127,7 @@ class LoginViewController: UIViewController {
     }
 }
 
+// MARK: UITextFieldDelegate
 extension LoginViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

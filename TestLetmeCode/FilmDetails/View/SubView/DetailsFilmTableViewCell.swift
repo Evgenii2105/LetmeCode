@@ -12,6 +12,7 @@ class DetailsFilmTableViewCell: UITableViewCell {
     static let cellidentidire = "detailFilmCell"
     
     weak var delegate: TapLinkDelegate?
+    private var link: URL?
     
     private let titleLabel: UILabel = {
         let titleLabel = UILabel()
@@ -22,11 +23,12 @@ class DetailsFilmTableViewCell: UITableViewCell {
         return titleLabel
     }()
     
-    private let linkButton: UIButton = {
+    private lazy var linkButton: UIButton = {
         let linkButton = UIButton()
         let image = UIImage(systemName: "link")
         linkButton.setImage(image, for: .normal)
         linkButton.tintColor = .cyan
+        linkButton.addTarget(self, action: #selector(tappedLinkBuitton), for: .touchUpInside)
         linkButton.translatesAutoresizingMaskIntoConstraints = false
         return linkButton
     }()
@@ -79,5 +81,12 @@ class DetailsFilmTableViewCell: UITableViewCell {
     
     func configure( discription: String?, link: URL?) {
         movieDescription.text = discription
+        self.link = link
+    }
+    
+    @objc
+    private func tappedLinkBuitton() {
+        guard let link = link else { return }
+        UIApplication.shared.open(link, options: [:], completionHandler: nil)
     }
 }

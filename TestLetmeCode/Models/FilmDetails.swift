@@ -21,6 +21,7 @@ struct FilmDetails: Decodable {
     let nameRu: String?
     let nameEn: String?
     let year: Int?
+    let webUrl: URL?
     
     enum CodingKeys: String, CodingKey {
         case nameOriginal = "nameOriginal"
@@ -35,6 +36,7 @@ struct FilmDetails: Decodable {
         case ratingKinopoisk = "ratingKinopoisk"
         case coverUrl = "coverUrl"
         case posterUrl = "posterUrl"
+        case webUrl = "webUrl"
     }
     
     init(from decoder: any Decoder) throws {
@@ -51,6 +53,7 @@ struct FilmDetails: Decodable {
         coverUrl = try container.decodeIfPresent(URL.self, forKey: .coverUrl)
         posterUrl = try container.decodeIfPresent(URL.self, forKey: .posterUrl)
         year = try container.decodeIfPresent(Int.self, forKey: .year)
+        webUrl = try container.decodeIfPresent(URL.self, forKey: .webUrl)
     }
 }
 
@@ -58,7 +61,7 @@ extension FilmDetails {
     
     func toCellTypes() -> [FilmDetailCellType] {
         return [
-            .description(link: nil,
+            .description(link: webUrl,
                          description: filmDescription),
             .genreAndYear(genres: genre.map({ GenreItem(genre: $0) }),
                           startYear: startYear,

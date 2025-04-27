@@ -22,6 +22,7 @@ struct FilmDetails: Decodable {
     let nameEn: String?
     let year: Int?
     let webUrl: URL?
+    var pictures: [FilmPicturesResponse.Items] = []
     
     enum CodingKeys: String, CodingKey {
         case nameOriginal = "nameOriginal"
@@ -68,7 +69,7 @@ extension FilmDetails {
                           endYear: endYear,
                           country: countries.map({ CountryItem(country: $0) }),
                           year: year),
-            .pictures(imageNames: [coverUrl].compactMap({ $0 }))
+            .pictures(imageNames: pictures.compactMap({ $0.previewUrl }))
         ]
     }
 }

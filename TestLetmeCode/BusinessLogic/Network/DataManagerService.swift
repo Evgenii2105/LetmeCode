@@ -28,10 +28,21 @@ class DataManagerServiceImpl: DataManagerService {
     }
     
     func getFilmDetails(filmId: Int, filmDetailResult: @escaping (Result<FilmDetails, Error>) -> Void) {
-        client.request(endPoint: .detailsFilm(id: filmId)) { (result: Result<FilmDetails, NetworkError>) in
+        client.request(endPoint: .detailsFilm(id: filmId)) { [weak self] (result: Result<FilmDetails, NetworkError>) in
             switch result {
             case .success(let filmDetails):
-                filmDetailResult(.success(filmDetails))
+                guard let self = self else { return }
+                
+                self.client.request(endPoint: .picturesFilm(id: filmId)) { (result: Result<FilmPicturesResponse, NetworkError>) in
+                    switch result {
+                    case .success(let pictures):
+                        var filmDetails = filmDetails
+                        filmDetails.pictures = pictures.items
+                        filmDetailResult(.success(filmDetails))
+                    case .failure(let error):
+                        filmDetailResult(.failure(NetworkError.decodingFailed(error)))
+                    }
+                }
             case .failure(let error):
                 filmDetailResult(.failure(NetworkError.decodingFailed(error)))
             }

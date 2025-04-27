@@ -13,6 +13,19 @@ class LoginViewController: UIViewController {
     var presenter: LoginPresenter?
     
     // MARK: - UI Components
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.isScrollEnabled = true
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
+    
+    private let containerView: UIView = {
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        return containerView
+    }()
+    
     private let titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.text = "Кинопоиск"
@@ -25,30 +38,46 @@ class LoginViewController: UIViewController {
     
     private let userLogin: UITextField = {
         let userLogin = UITextField()
-        userLogin.placeholder = "Логин"
+        userLogin.attributedPlaceholder = NSAttributedString(
+            string: "Логин",
+            attributes: [.foregroundColor: UIColor.gray]
+        )
+        userLogin.layer.cornerRadius = 8
         userLogin.borderStyle = .roundedRect
+        userLogin.layer.borderWidth = 1
+        userLogin.layer.borderColor = UIColor.gray.cgColor
+        userLogin.backgroundColor = .black
+        userLogin.textColor = .gray
         userLogin.translatesAutoresizingMaskIntoConstraints = false
         return userLogin
     }()
     
     private let userPassword: UITextField = {
         let userPassword = UITextField()
-        userPassword.placeholder = "Пароль"
+        userPassword.attributedPlaceholder = NSAttributedString(
+            string: "Пароль",
+            attributes: [.foregroundColor: UIColor.gray]
+        )
+        userPassword.layer.cornerRadius = 8
         userPassword.borderStyle = .roundedRect
         userPassword.isSecureTextEntry = true
+        userPassword.layer.borderWidth = 1
+        userPassword.layer.borderColor = UIColor.gray.cgColor
+        userPassword.backgroundColor = .black
+        userPassword.textColor = .gray
         userPassword.translatesAutoresizingMaskIntoConstraints = false
         return userPassword
     }()
     
-    private let loginBitton: UIButton = {
-        let loginBitton = UIButton(type: .system)
-        loginBitton.setTitle("Войти", for: .normal)
-        loginBitton.setTitleColor(.white, for: .normal)
-        loginBitton.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
-        loginBitton.backgroundColor = .cyan
-        loginBitton.layer.cornerRadius = 8
-        loginBitton.translatesAutoresizingMaskIntoConstraints = false
-        return loginBitton
+    private let loginButton: UIButton = {
+        let loginButton = UIButton(type: .system)
+        loginButton.setTitle("Войти", for: .normal)
+        loginButton.setTitleColor(.white, for: .normal)
+        loginButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
+        loginButton.backgroundColor = .cyan
+        loginButton.layer.cornerRadius = 8
+        loginButton.translatesAutoresizingMaskIntoConstraints = false
+        return loginButton
     }()
     
     // MARK: - Lifecycle
@@ -60,36 +89,53 @@ class LoginViewController: UIViewController {
         setupAction()
         tapGesture()
         textFieldDelegate()
+        setupNotifications()
     }
 
     private func addHierarchy() {
-        view.addSubview(titleLabel)
-        view.addSubview(userLogin)
-        view.addSubview(userPassword)
-        view.addSubview(loginBitton)
+       // navigationController?.setNavigationBarHidden(true, animated: true)
+        view.addSubview(scrollView)
+        scrollView.addSubview(containerView)
+        containerView.addSubview(titleLabel)
+        containerView.addSubview(userLogin)
+        containerView.addSubview(userPassword)
+        containerView.addSubview(loginButton)
     }
     
     private func setupContraints() {
         NSLayoutConstraint.activate([
             
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100),
-            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            // scrollView.widthAnchor.constraint(equalTo: containerView.widthAnchor),
+            
+            containerView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            containerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            containerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            //            containerView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            
+            titleLabel.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor, constant: 100),
+            titleLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             
             userLogin.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 160),
-            userLogin.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-            userLogin.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+            userLogin.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 8),
+            userLogin.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -8),
             userLogin.heightAnchor.constraint(equalToConstant: 44),
             
             userPassword.topAnchor.constraint(equalTo: userLogin.bottomAnchor, constant: 16),
-            userPassword.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-            userPassword.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+            userPassword.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 8),
+            userPassword.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -8),
             userPassword.heightAnchor.constraint(equalToConstant: 44),
             
-            loginBitton.topAnchor.constraint(equalTo: userPassword.bottomAnchor, constant: 240),
-            loginBitton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-            loginBitton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
-            loginBitton.heightAnchor.constraint(equalToConstant: 44)
-            
+            loginButton.topAnchor.constraint(equalTo: userPassword.bottomAnchor, constant: 64),
+            loginButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 8),
+            loginButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -32),
+            loginButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -8),
+            loginButton.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
     
@@ -118,7 +164,7 @@ class LoginViewController: UIViewController {
     }
     
     private func setupAction() {
-        loginBitton.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
+        loginButton.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
     }
     
     @objc
@@ -165,5 +211,42 @@ extension LoginViewController: LoginView {
         filmsListPresenter?.view = filmsVC
         
         navigationController?.pushViewController(filmsVC, animated: true)
+    }
+}
+
+private extension LoginViewController {
+    
+    func setupNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShow),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHide),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+    }
+    
+    @objc
+    func keyboardWillShow(notification: NSNotification) {
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+            return
+        }
+        
+        let keyboardHeight = keyboardSize.height
+        var contentInset = scrollView.contentInset
+        contentInset.bottom = -keyboardHeight
+        scrollView.contentInset = contentInset
+//        scrollView.contentInset = UIEdgeInsets(top: 0,
+//                                              left: 0,
+//                                              bottom: -keyboardHeight,
+//                                              right: 0)
+        scrollView.scrollIndicatorInsets = scrollView.contentInset
+    }
+    
+    @objc
+    func keyboardWillHide(notification: NSNotification) {
+        scrollView.contentInset = UIEdgeInsets.zero
+        scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
     }
 }

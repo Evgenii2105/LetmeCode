@@ -76,7 +76,7 @@ class NetworkImpl {
     enum EndPoint {
         case films
         case detailsFilm(id: Int)
-        case movieFilm(id: Int)
+        case picturesFilm(id: Int)
         
         var scheme: String {
             return "https"
@@ -88,8 +88,8 @@ class NetworkImpl {
                 return "/api/v2.2/films"
             case .detailsFilm(let id):
                 return "/api/v2.2/films/\(id)"
-            case .movieFilm(let id):
-                return "/v2.2/films/\(id)/images"
+            case .picturesFilm(let id):
+                return "/api/v2.2/films/\(id)/images"
             }
         }
         
@@ -99,7 +99,7 @@ class NetworkImpl {
                 return .get
             case .detailsFilm(_):
                 return .get
-            case .movieFilm(_):
+            case .picturesFilm(_):
                 return .get
             }
         }

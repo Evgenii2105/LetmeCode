@@ -77,6 +77,13 @@ class FilmsListViewController: UIViewController {
         return listFilmsTable
     }()
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = .white
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
+        return refreshControl
+    }()
+    
     private lazy var exitButton: UIBarButtonItem = {
         let image = UIImage(systemName: "rectangle.portrait.and.arrow.right")?
             .withConfiguration(UIImage.SymbolConfiguration(weight: .bold))
@@ -114,6 +121,7 @@ class FilmsListViewController: UIViewController {
         setupUI()
         createListFilmsTable()
         presenter?.setupDataSource()
+        listFilmsTable.refreshControl = refreshControl
     }
     
     private func setupNavigationBar() {
@@ -174,6 +182,14 @@ class FilmsListViewController: UIViewController {
         view.endEditing(true)
         presenter?.performLogaut()
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc
+    private func pullToRefresh() {
+        refreshControl.beginRefreshing()
+        currentSorted = .sortedDefault
+        presenter?.setupDataSource()
+        refreshControl.endRefreshing()
     }
     
     @objc

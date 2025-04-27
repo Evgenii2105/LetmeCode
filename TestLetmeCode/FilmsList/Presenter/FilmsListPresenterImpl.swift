@@ -8,7 +8,7 @@
 import UIKit
 
 class FilmsListPresenterImpl: FilmsListPresenter {
-   
+    
     weak var view: FilmsListView?
     weak var delegate: FilmsListDelegate?
     private let dataManagerService: DataManagerService = DataManagerServiceImpl()
@@ -67,7 +67,7 @@ class FilmsListPresenterImpl: FilmsListPresenter {
         view?.didLoadFilms(films: filterFilms)
     }
     
-    func sort(by: FilmsListViewController.Sorted) {
+    func sort(by: FilmsListViewController.FilmSorting) {
         var sorted = films
         switch by {
         case .sortedDefault:

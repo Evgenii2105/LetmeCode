@@ -62,8 +62,15 @@ extension FilmDetails {
     
     func toCellTypes() -> [FilmDetailCellType] {
         return [
-            .description(link: webUrl,
-                         description: filmDescription),
+            .movieHeaderPicture(
+                imageURl: posterUrl,
+                name: nameOriginal ?? nameRu ?? nameEn,
+                rating: ratingKinopoisk
+            ),
+            .description(
+                link: webUrl,
+                description: filmDescription
+            ),
             .genreAndYear(genres: genre.map({ GenreItem(genre: $0) }),
                           startYear: startYear,
                           endYear: endYear,

@@ -17,22 +17,7 @@ class FilmDetailsPresenterImpl: FilmDetailsPresenter {
         self.filmDetails = filmDetails
     }
     
-    func setupDataSourse() {
-        
-        let title =  [
-            filmDetails.nameOriginal,
-            filmDetails.nameEn,
-            filmDetails.nameRu
-        ]
-            .compactMap({ $0 })
-            .filter({ !$0.isEmpty })
-            .first
-        
-        view?.showFilmDetails(
-            title: title ?? "Без названия",
-            rating: filmDetails.ratingKinopoisk,
-            cellTypes: filmDetails.toCellTypes(),
-            imageUrl: filmDetails.posterUrl
-        )
+    func setupDataSourse() {        
+        view?.showFilmDetails(cellTypes: filmDetails.toCellTypes())
     }
 }

@@ -5,7 +5,6 @@
 //  Created by Евгений Фомичев on 19.04.2025.
 //
 
-import Foundation
 import UIKit
 
 class NetworkImpl {
@@ -58,7 +57,7 @@ class NetworkImpl {
         guard let url = urlComponents.url else { return nil}
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = endPoint.method.rawValue
-        urlRequest.setValue("de1db718-950e-449d-88a1-39a41062cee6", forHTTPHeaderField: "X-API-KEY")
+        urlRequest.setValue("dfb1b814-db03-4878-bcf4-c54787098b5a", forHTTPHeaderField: "X-API-KEY")
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         return urlRequest
     }

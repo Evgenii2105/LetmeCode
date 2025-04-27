@@ -26,8 +26,15 @@ struct CountryItem {
 }
 
 enum FilmDetailCellType {
-    case movieHeaderPicture(image: URL)
-    case description(link: URL?, description: String?)
+    case movieHeaderPicture(
+        imageURl: URL?,
+        name: String?,
+        rating: Decimal
+    )
+    case description(
+        link: URL?,
+        description: String?
+    )
     case genreAndYear(
         genres: [GenreItem],
         startYear: Int?

@@ -9,7 +9,7 @@ import UIKit
 
 class FilmsListViewController: UIViewController {
     
-    enum Sorted {
+    enum FilmSorting {
         case sortedDefault
         case sortedDescending
         case sortedAscending
@@ -17,7 +17,7 @@ class FilmsListViewController: UIViewController {
     
     // MARK: - Properties
     var presenter: FilmsListPresenter?
-    private var currentSorted: Sorted = .sortedDefault
+    private var currentSorted: FilmSorting = .sortedDefault
     private var films: [FilmsListItem] = []
     
     // MARK: - UI Components
@@ -124,6 +124,42 @@ class FilmsListViewController: UIViewController {
         listFilmsTable.refreshControl = refreshControl
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        let top = view.safeAreaInsets.top + 16
+        let elementHeight: CGFloat = 44
+        let horizontalPadding: CGFloat = 16
+        
+        sortedButton.frame = CGRect(
+            x: horizontalPadding,
+            y: top,
+            width: elementHeight,
+            height: elementHeight
+        )
+        
+        searchTextFild.frame = CGRect(
+            x: sortedButton.frame.maxX + horizontalPadding,
+            y: top,
+            width: view.bounds.width - sortedButton.frame.maxX - horizontalPadding - horizontalPadding,
+            height: elementHeight
+        )
+        
+        yearButton.frame = CGRect(
+            x: horizontalPadding,
+            y: top + elementHeight + 8,
+            width: view.bounds.width - 2 * horizontalPadding,
+            height: elementHeight
+        )
+        
+        listFilmsTable.frame = CGRect(
+            x: 0,
+            y: yearButton.frame.maxY + 8,
+            width: view.bounds.width,
+            height: view.bounds.height - yearButton.frame.maxY - view.safeAreaInsets.bottom
+        )
+    }
+    
     private func setupNavigationBar() {
         let titleLabel = UILabel()
         titleLabel.text = "Кинопоиск"
@@ -142,38 +178,6 @@ class FilmsListViewController: UIViewController {
         view.addSubview(listFilmsTable)
         view.addSubview(sortedButton)
         navigationItem.hidesBackButton = true
-        
-        let topInset: CGFloat = 125
-        let elementHeight: CGFloat = 44
-        let horizontalPadding: CGFloat = 16
-        
-        sortedButton.frame = CGRect(
-            x: horizontalPadding,
-            y: topInset,
-            width: elementHeight,
-            height: elementHeight
-        )
-        
-        searchTextFild.frame = CGRect(
-            x: sortedButton.frame.maxX + horizontalPadding,
-            y: topInset,
-            width: view.bounds.width - sortedButton.frame.maxX - horizontalPadding - horizontalPadding,
-            height: elementHeight
-        )
-        
-        yearButton.frame = CGRect(
-            x: horizontalPadding,
-            y: topInset + elementHeight + 8,
-            width: view.bounds.width - 2 * horizontalPadding,
-            height: elementHeight
-        )
-        
-        listFilmsTable.frame = CGRect(
-            x: 0,
-            y: yearButton.frame.maxY + 8,
-            width: view.bounds.width,
-            height: view.bounds.height - yearButton.frame.maxY - view.safeAreaInsets.bottom
-        )
     }
     
     // MARK: - Actions
@@ -246,7 +250,7 @@ class FilmsListViewController: UIViewController {
     }
     
     private func createListFilmsTable() {
-        listFilmsTable.register(CustomCell.self, forCellReuseIdentifier: CustomCell.filmCellIdentifier)
+        listFilmsTable.register(FilmDataCell.self, forCellReuseIdentifier: FilmDataCell.filmCellIdentifier)
         listFilmsTable.dataSource = self
         listFilmsTable.delegate = self
     }
@@ -281,8 +285,8 @@ extension FilmsListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CustomCell.filmCellIdentifier,
-                                                       for: indexPath) as? CustomCell,
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: FilmDataCell.filmCellIdentifier,
+                                                       for: indexPath) as? FilmDataCell,
               indexPath.row < films.count
         else {
             return UITableViewCell()

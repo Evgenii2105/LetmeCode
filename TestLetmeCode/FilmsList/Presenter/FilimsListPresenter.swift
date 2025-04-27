@@ -8,11 +8,11 @@
 import Foundation
 
 protocol FilmsListPresenter: AnyObject {
-    func makeFilmsDetailPresenter(film: FilmsListItem) 
+    func makeFilmsDetailPresenter(film: FilmsListItem)
     func performLogaut()
     func setupDataSource()
     func search(with query: String?)
-    func sort(by: FilmsListViewController.Sorted)
+    func sort(by: FilmsListViewController.FilmSorting)
     func filter(by year: GenericPickerViewController.YearFilter)
 }
 

@@ -75,7 +75,7 @@ class GenreYearTableViewCell: UITableViewCell {
         genreLabel.text = genres.map({ $0.genre }).joined(separator: ", ")
         countryLabel.text = countries.map({ $0.country }).joined(separator: ", ")
         var yearText = ""
-    
+        
         if let year = year {
             if yearText.isEmpty {
                 yearText += "\(year)"

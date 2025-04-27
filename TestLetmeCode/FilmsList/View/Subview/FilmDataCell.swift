@@ -1,5 +1,5 @@
 //
-//  CustomCell.swift
+//  FilmDataCell.swift
 //  TestLetmeCode
 //
 //  Created by Евгений Фомичев on 17.04.2025.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CustomCell: UITableViewCell {
+class FilmDataCell: UITableViewCell {
     
     static let filmCellIdentifier = "customCellFilm"
     private static let cache = NSCache<NSURL, UIImage>()

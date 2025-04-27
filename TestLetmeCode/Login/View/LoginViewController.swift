@@ -91,9 +91,9 @@ class LoginViewController: UIViewController {
         textFieldDelegate()
         setupNotifications()
     }
-
+    
     private func addHierarchy() {
-       // navigationController?.setNavigationBarHidden(true, animated: true)
+        // navigationController?.setNavigationBarHidden(true, animated: true)
         view.addSubview(scrollView)
         scrollView.addSubview(containerView)
         containerView.addSubview(titleLabel)
@@ -109,14 +109,12 @@ class LoginViewController: UIViewController {
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            // scrollView.widthAnchor.constraint(equalTo: containerView.widthAnchor),
             
             containerView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             containerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             containerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            //            containerView.heightAnchor.constraint(equalTo: view.heightAnchor),
             
             titleLabel.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor, constant: 100),
             titleLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
@@ -147,14 +145,14 @@ class LoginViewController: UIViewController {
     // MARK: - Actions
     private func tapGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-         view.addGestureRecognizer(tapGesture)
+        view.addGestureRecognizer(tapGesture)
     }
     
     private func saveLoginAndPasswordUser() {
         guard let userLoginn = userLogin.text, !userLoginn.isEmpty,
               let userPasswordd = userPassword.text, !userPasswordd.isEmpty else {
-                  return
-              }
+            return
+        }
         UserDefaults.standard.set(userLoginn, forKey: userPasswordd)
     }
     
@@ -235,12 +233,8 @@ private extension LoginViewController {
         
         let keyboardHeight = keyboardSize.height
         var contentInset = scrollView.contentInset
-        contentInset.bottom = -keyboardHeight
+        contentInset.bottom = keyboardHeight
         scrollView.contentInset = contentInset
-//        scrollView.contentInset = UIEdgeInsets(top: 0,
-//                                              left: 0,
-//                                              bottom: -keyboardHeight,
-//                                              right: 0)
         scrollView.scrollIndicatorInsets = scrollView.contentInset
     }
     

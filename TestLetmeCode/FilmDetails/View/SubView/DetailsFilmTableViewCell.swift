@@ -79,7 +79,7 @@ class DetailsFilmTableViewCell: UITableViewCell {
         ])
     }
     
-    func configure( discription: String?, link: URL?) {
+    func configure(discription: String?, link: URL?) {
         movieDescription.text = discription
         self.link = link
     }
